@@ -4,14 +4,15 @@ import {
   DrawerItemList,
   DrawerItem,
 } from "@react-navigation/drawer";
+import { useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import { Pressable } from "react-native";
+import { DrawerActions } from "@react-navigation/native";
 import BottomTabs from "./BottomTabs";
 
 import ProfileScreen from "../screens/ProfileScreen";
 import ThemeScreen from "../screens/ThemeScreen";
 import LanguageScreen from "../screens/LanguageScreen";
-import {Pressable} from "react-native";
-import {DrawerActions} from "@react-navigation/native";
 
 const Drawer = createDrawerNavigator();
 
@@ -38,23 +39,21 @@ function CustomDrawerContent(props) {
 }
 
 export default function DrawerNavigator() {
+  const { colors } = useTheme();
+
   return (
     <Drawer.Navigator
       initialRouteName="Home"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
-      screenOptions={({  navigation, route }) => ({
-
-
-          headerLeft: () => (
-              <Pressable
-                  onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-                  style={{ paddingHorizontal: 16 }}
-              >
-                  <Ionicons name="menu" size={24} />
-              </Pressable>
-          ),
-
-
+      screenOptions={({ navigation, route }) => ({
+        headerLeft: () => (
+          <Pressable
+            onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+            style={{ paddingHorizontal: 16 }}
+          >
+            <Ionicons name="menu" size={24} color={colors.text} />
+          </Pressable>
+        ),
         drawerIcon: ({ color, size }) => {
           const icons = {
             Home: "home",

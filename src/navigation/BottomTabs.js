@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, Text, View} from 'react-native';
 
 import CalendarScreen from "../screens/CalendarScreen";
 import MapScreen from "../screens/MapScreen";
@@ -9,18 +9,20 @@ import NewViolationScreen from "../screens/CreateViolationScreen";
 const Tab = createBottomTabNavigator();
 
 export default function BottomTabs() {
+  const { colors } = useTheme();
   return (
     <Tab.Navigator
       screenOptions={({ navigation, route }) => ({
         headerTitleAlign: "center",
         headerLeft: () => (
-            <Ionicons
-              name="menu"
-              size={24}
-              style={{ marginLeft: 16 }}
-              onPress={() => navigation.getParent()?.openDrawer()}
-            />
-            ),
+          <Ionicons
+            name="menu"
+            size={24}
+            color={colors.text}
+            style={{ marginLeft: 16 }}
+            onPress={() => navigation.getParent()?.openDrawer()}
+          />
+        ),
         tabBarIcon: ({ focused, color, size }) => {
           const icons = {
             Calendar: focused ? "calendar" : "calendar-outline",
@@ -37,11 +39,3 @@ export default function BottomTabs() {
     </Tab.Navigator>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

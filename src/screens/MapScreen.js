@@ -1,17 +1,18 @@
 import { View, Text, StyleSheet } from "react-native";
+import { useTheme } from "@react-navigation/native";
 
 export default function MapScreen() {
+  const { colors } = useTheme();
   return (
-    <View style={styles.container}>
-      <Text>Map</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <Text style={{ color: colors.text }}>Map</Text>
     </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

@@ -1,51 +1,28 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useContext } from "react";
+import { View, Text, Pressable } from "react-native";
+import { ThemeContext } from "../Theme/ThemeProvider";
 
 export default function ThemeScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Вибір теми</Text>
-      <View style={styles.options}>
-        <TouchableOpacity style={[styles.option, styles.light]}>
-          <Text style={styles.optionText}>Світла</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.option, styles.dark]}>
-          <Text style={[styles.optionText, styles.darkText]}>Темна</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
+    const { themeKey, toggleTheme, theme } = useContext(ThemeContext);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    padding: 24,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginBottom: 24,
-  },
-  options: {
-    gap: 12,
-  },
-  option: {
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-  },
-  light: {
-    backgroundColor: "#f5f5f5",
-  },
-  dark: {
-    backgroundColor: "#1a1a1a",
-  },
-  optionText: {
-    fontSize: 16,
-  },
-  darkText: {
-    color: "#fff",
-  },
-});
+    return (
+        <View style={{ flex: 1, padding: 16, backgroundColor: theme.colors.background }}>
+            <Text style={{ color: theme.colors.text, fontSize: 18, marginBottom: 12 }}>
+                Current theme: {themeKey}
+            </Text>
+
+            <Pressable
+                onPress={toggleTheme}
+                style={{
+                    paddingVertical: 12,
+                    paddingHorizontal: 16,
+                    backgroundColor: theme.colors.primary,
+                    borderRadius: 12,
+                    alignSelf: "flex-start",
+                }}
+            >
+                <Text style={{ color: "#fff", fontWeight: "600" }}>Toggle theme</Text>
+            </Pressable>
+        </View>
+    );
+}

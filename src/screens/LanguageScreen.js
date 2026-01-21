@@ -1,18 +1,20 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useTheme } from "@react-navigation/native";
 
 export default function LanguageScreen() {
+  const { colors } = useTheme();
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Вибір мови</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <Text style={[styles.title, { color: colors.text }]}>Вибір мови</Text>
       <View style={styles.options}>
-        <TouchableOpacity style={styles.option}>
-          <Text style={styles.optionText}>Українська</Text>
+        <TouchableOpacity style={[styles.option, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+          <Text style={[styles.optionText, { color: colors.text }]}>Українська</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.option}>
-          <Text style={styles.optionText}>English</Text>
+        <TouchableOpacity style={[styles.option, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+          <Text style={[styles.optionText, { color: colors.text }]}>English</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.option}>
-          <Text style={styles.optionText}>Русский</Text>
+        <TouchableOpacity style={[styles.option, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+          <Text style={[styles.optionText, { color: colors.text }]}>Русский</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -22,7 +24,6 @@ export default function LanguageScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     padding: 24,
   },
   title: {
@@ -37,8 +38,6 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#e0e0e0",
-    backgroundColor: "#fafafa",
   },
   optionText: {
     fontSize: 16,
