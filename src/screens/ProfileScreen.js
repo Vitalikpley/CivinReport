@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
 
-export default function MapScreen() {
+export default function ProfileScreen() {
   return (
     <View style={styles.container}>
-      <Text>Map</Text>
+      <Text>Profile (stub)</Text>
     </View>
   );
 }

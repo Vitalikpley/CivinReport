@@ -11,8 +11,16 @@ const Tab = createBottomTabNavigator();
 export default function BottomTabs() {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
+      screenOptions={({ navigation, route }) => ({
         headerTitleAlign: "center",
+        headerLeft: () => (
+            <Ionicons
+              name="menu"
+              size={24}
+              style={{ marginLeft: 16 }}
+              onPress={() => navigation.getParent()?.openDrawer()}
+            />
+            ),
         tabBarIcon: ({ focused, color, size }) => {
           const icons = {
             Calendar: focused ? "calendar" : "calendar-outline",
