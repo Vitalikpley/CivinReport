@@ -2,12 +2,13 @@ import { useContext } from "react";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
 import { ThemeProvider, ThemeContext } from "./src/Theme/ThemeProvider";
+import { LanguageProvider, LanguageContext } from "./src/i18n/languageProvider";
 import DrawerNavigator from "./src/navigation/DrawersNavigator";
 
 function AppInner() {
     const { theme, isReady } = useContext(ThemeContext);
-
-    if (!isReady) return null;
+    const { isReady: isLangReady } = useContext(LanguageContext);
+    if (!isReady || !isLangReady) return null;
 
     const navTheme =
         theme.mode === "dark"
@@ -28,8 +29,10 @@ function AppInner() {
 
 export default function App() {
     return (
-        <ThemeProvider>
-            <AppInner />
-        </ThemeProvider>
+        <LanguageProvider>
+            <ThemeProvider>
+                <AppInner />
+            </ThemeProvider>
+        </LanguageProvider>
     );
 }

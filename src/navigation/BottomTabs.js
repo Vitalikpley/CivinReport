@@ -1,5 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 import { Ionicons } from "@expo/vector-icons";
 
 import CalendarScreen from "../screens/CalendarScreen";
@@ -10,6 +11,7 @@ const Tab = createBottomTabNavigator();
 
 export default function BottomTabs() {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   return (
     <Tab.Navigator
       screenOptions={({ navigation, route }) => ({
@@ -33,9 +35,21 @@ export default function BottomTabs() {
         },
       })}
     >
-      <Tab.Screen name="Calendar" component={CalendarScreen} />
-      <Tab.Screen name="Map" component={MapScreen} />
-      <Tab.Screen name="New" component={NewViolationScreen} />
+      <Tab.Screen
+        name="Calendar"
+        component={CalendarScreen}
+        options={{ tabBarLabel: t("tabs.calendar"), title: t("screens.calendarTitle") }}
+      />
+      <Tab.Screen
+        name="Map"
+        component={MapScreen}
+        options={{ tabBarLabel: t("tabs.map"), title: t("screens.mapTitle") }}
+      />
+      <Tab.Screen
+        name="New"
+        component={NewViolationScreen}
+        options={{ tabBarLabel: t("tabs.new"), title: t("screens.newTitle") }}
+      />
     </Tab.Navigator>
   );
 }

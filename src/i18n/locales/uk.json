@@ -1,0 +1,28 @@
+{
+  "tabs": { "calendar": "Календар", "map": "Мапа", "new": "Нове" },
+  "drawer": {
+    "home": "Головна",
+    "profile": "Профіль",
+    "themeSelect": "Вибір теми",
+    "languageSelect": "Вибір мови",
+    "logout": "Вихід"
+  },
+  "screens": {
+    "calendarTitle": "Календар",
+    "mapTitle": "Мапа",
+    "newTitle": "Нове правопорушення",
+    "profileTitle": "Профіль",
+    "profileStub": "Профіль (заглушка)",
+    "themeTitle": "Тема",
+    "languageTitle": "Мова"
+  },
+  "theme": {
+    "current": "Поточна тема",
+    "toggle": "Змінити тему"
+  },
+  "language": {
+    "current": "Поточна мова",
+    "english": "Англійська",
+    "ukrainian": "Українська"
+  }
+}

@@ -1,11 +1,13 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 export default function NewViolationScreen() {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={{ color: colors.text }}>New violation</Text>
+      <Text style={{ color: colors.text }}>{t("screens.newTitle")}</Text>
     </View>
   );
 }

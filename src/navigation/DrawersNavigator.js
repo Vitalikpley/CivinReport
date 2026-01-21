@@ -5,6 +5,7 @@ import {
   DrawerItem,
 } from "@react-navigation/drawer";
 import { useTheme } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable } from "react-native";
 import { DrawerActions } from "@react-navigation/native";
@@ -16,16 +17,15 @@ import LanguageScreen from "../screens/LanguageScreen";
 
 const Drawer = createDrawerNavigator();
 
-function onLogout() {
-
-}
+function onLogout() {}
 
 function CustomDrawerContent(props) {
+  const { t } = useTranslation();
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
       <DrawerItem
-        label="Вихід"
+        label={t("drawer.logout")}
         icon={({ color, size }) => (
           <Ionicons name="log-out" size={size} color={color} />
         )}
@@ -40,6 +40,7 @@ function CustomDrawerContent(props) {
 
 export default function DrawerNavigator() {
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Drawer.Navigator
@@ -68,25 +69,22 @@ export default function DrawerNavigator() {
       <Drawer.Screen
         name="Home"
         component={BottomTabs}
-        options={{
-          headerShown: false,
-          title: "Головна",
-        }}
+        options={{ headerShown: false, title: t("drawer.home") }}
       />
       <Drawer.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{ title: "Профіль" }}
+        options={{ title: t("drawer.profile") }}
       />
       <Drawer.Screen
         name="Theme"
         component={ThemeScreen}
-        options={{ title: "Вибір теми" }}
+        options={{ title: t("drawer.themeSelect") }}
       />
       <Drawer.Screen
         name="Language"
         component={LanguageScreen}
-        options={{ title: "Вибір мови" }}
+        options={{ title: t("drawer.languageSelect") }}
       />
     </Drawer.Navigator>
   );

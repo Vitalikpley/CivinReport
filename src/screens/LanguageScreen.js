@@ -1,45 +1,33 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { useContext } from "react";
+import { View, Text, Pressable } from "react-native";
+import { useTranslation } from "react-i18next";
+import { LanguageContext } from "../i18n/languageProvider";
+import { ThemeContext } from "../Theme/ThemeProvider";
 
 export default function LanguageScreen() {
-  const { colors } = useTheme();
-  return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={[styles.title, { color: colors.text }]}>Вибір мови</Text>
-      <View style={styles.options}>
-        <TouchableOpacity style={[styles.option, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-          <Text style={[styles.optionText, { color: colors.text }]}>Українська</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.option, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-          <Text style={[styles.optionText, { color: colors.text }]}>English</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.option, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-          <Text style={[styles.optionText, { color: colors.text }]}>Русский</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
+    const { t } = useTranslation();
+    const { language, setLanguage } = useContext(LanguageContext);
+    const { theme } = useContext(ThemeContext);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginBottom: 24,
-  },
-  options: {
-    gap: 12,
-  },
-  option: {
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-  },
-  optionText: {
-    fontSize: 16,
-  },
-});
+    return (
+        <View style={{ flex: 1, padding: 16, backgroundColor: theme.colors.background }}>
+            <Text style={{ color: theme.colors.text, fontSize: 18, marginBottom: 12 }}>
+                {t("language.current")}: {language}
+            </Text>
+
+            <Pressable
+                onPress={() => setLanguage("uk")}
+                style={{ padding: 12, borderRadius: 12, marginBottom: 10, backgroundColor: theme.colors.surface }}
+            >
+                <Text style={{ color: theme.colors.text }}>{t("language.ukrainian")}</Text>
+            </Pressable>
+
+            <Pressable
+                onPress={() => setLanguage("en")}
+                style={{ padding: 12, borderRadius: 12, backgroundColor: theme.colors.surface }}
+            >
+                <Text style={{ color: theme.colors.text }}>{t("language.english")}</Text>
+            </Pressable>
+        </View>
+    );
+}

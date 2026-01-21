@@ -1,0 +1,28 @@
+{
+  "tabs": { "calendar": "Calendar", "map": "Map", "new": "New" },
+  "drawer": {
+    "home": "Home",
+    "profile": "Profile",
+    "themeSelect": "Theme",
+    "languageSelect": "Language",
+    "logout": "Logout"
+  },
+  "screens": {
+    "calendarTitle": "Calendar",
+    "mapTitle": "Map",
+    "newTitle": "New violation",
+    "profileTitle": "Profile",
+    "profileStub": "Profile (stub)",
+    "themeTitle": "Theme",
+    "languageTitle": "Language"
+  },
+  "theme": {
+    "current": "Current theme",
+    "toggle": "Toggle theme"
+  },
+  "language": {
+    "current": "Current language",
+    "english": "English",
+    "ukrainian": "Ukrainian"
+  }
+}
