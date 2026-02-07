@@ -1,5 +1,5 @@
 {
-  "tabs": { "calendar": "Calendar", "map": "Map", "new": "New" },
+  "tabs": { "calendar": "Calendar", "map": "Map", "new": "New", "list": "List" },
   "drawer": {
     "home": "Home",
     "profile": "Profile",
@@ -24,5 +24,23 @@
     "current": "Current language",
     "english": "English",
     "ukrainian": "Ukrainian"
+  },
+  "violation": {
+    "description": "Description",
+    "category": "Category",
+    "takePhoto": "Take photo",
+    "save": "Save",
+    "saved": "Saved to SQLite"
+  },
+  "categories": {
+    "road_damage": "Road damage",
+    "illegal_parking": "Illegal parking",
+    "garbage": "Garbage",
+    "lighting": "Lighting",
+    "other": "Other"
+  },
+  "list": {
+    "title": "Violations list",
+    "empty": "No saved violations"
   }
 }

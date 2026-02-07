@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import CalendarScreen from "../screens/CalendarScreen";
 import MapScreen from "../screens/MapScreen";
 import NewViolationScreen from "../screens/CreateViolationScreen";
+import ViolationsListScreen from "../screens/ViolationsListScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -30,6 +31,7 @@ export default function BottomTabs() {
             Calendar: focused ? "calendar" : "calendar-outline",
             Map: focused ? "map" : "map-outline",
             New: focused ? "add-circle" : "add-circle-outline",
+            List: focused ? "list" : "list-outline",
           };
           return <Ionicons name={icons[route.name]} size={size} color={color} />;
         },
@@ -49,6 +51,11 @@ export default function BottomTabs() {
         name="New"
         component={NewViolationScreen}
         options={{ tabBarLabel: t("tabs.new"), title: t("screens.newTitle") }}
+      />
+      <Tab.Screen
+        name="List"
+        component={ViolationsListScreen}
+        options={{ tabBarLabel: t("tabs.list"), title: t("list.title") }}
       />
     </Tab.Navigator>
   );

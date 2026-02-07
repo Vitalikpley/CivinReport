@@ -1,5 +1,5 @@
 {
-  "tabs": { "calendar": "Календар", "map": "Мапа", "new": "Нове" },
+  "tabs": { "calendar": "Календар", "map": "Мапа", "new": "Нове", "list": "Список" },
   "drawer": {
     "home": "Головна",
     "profile": "Профіль",
@@ -24,5 +24,23 @@
     "current": "Поточна мова",
     "english": "Англійська",
     "ukrainian": "Українська"
+  },
+  "violation": {
+    "description": "Опис",
+    "category": "Категорія",
+    "takePhoto": "Зробити фото",
+    "save": "Зберегти",
+    "saved": "Збережено в SQLite"
+  },
+  "categories": {
+    "road_damage": "Пошкодження дороги",
+    "illegal_parking": "Незаконне паркування",
+    "garbage": "Сміття",
+    "lighting": "Освітлення",
+    "other": "Інше"
+  },
+  "list": {
+    "title": "Список правопорушень",
+    "empty": "Немає збережених правопорушень"
   }
 }

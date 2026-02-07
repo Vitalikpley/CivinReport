@@ -1,13 +1,19 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
 import { ThemeProvider, ThemeContext } from "./src/Theme/ThemeProvider";
 import { LanguageProvider, LanguageContext } from "./src/i18n/languageProvider";
+import { initDb } from "./src/db/sqlite";
 import DrawerNavigator from "./src/navigation/DrawersNavigator";
 
 function AppInner() {
     const { theme, isReady } = useContext(ThemeContext);
     const { isReady: isLangReady } = useContext(LanguageContext);
+
+    useEffect(() => {
+        initDb().catch((e) => console.warn("SQLite init:", e));
+    }, []);
+
     if (!isReady || !isLangReady) return null;
 
     const navTheme =
