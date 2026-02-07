@@ -16,6 +16,9 @@ import * as ImagePicker from "expo-image-picker";
 import { insertOfflineViolation, getOfflineViolations } from "../db/sqlite";
 import { VIOLATION_CATEGORY_KEYS } from "../constants/categories";
 
+import { uploadImage } from "../services/cloudinary";
+
+
 export default function CreateViolationScreen() {
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -23,6 +26,10 @@ export default function CreateViolationScreen() {
   const [category, setCategory] = useState(VIOLATION_CATEGORY_KEYS[0]);
   const [photoBase64, setPhotoBase64] = useState(null);
   const [photoMime, setPhotoMime] = useState(null);
+
+  const [photoUri, setPhotoUri] = useState(null);
+  const [photoFileName, setPhotoFileName] = useState(null);
+
   const [saving, setSaving] = useState(false);
 
   const takePhoto = async () => {
@@ -41,42 +48,70 @@ export default function CreateViolationScreen() {
       const asset = result.assets[0];
       setPhotoBase64(asset.base64 ?? null);
       setPhotoMime(asset.mimeType ?? "image/jpeg");
+
+      setPhotoUri(asset.uri ?? null);
+      setPhotoFileName(asset.fileName || asset.uri?.split("/").pop() || "photo.jpg");
+
     }
   };
 
-  const save = async () => {
-    if (!description.trim()) {
-      Alert.alert("", "Введіть опис.");
-      return;
-    }
-    if (!photoBase64) {
-      Alert.alert("", "Зробіть фото.");
-      return;
-    }
-    setSaving(true);
-    try {
-      const datetime = new Date().toISOString();
-      await insertOfflineViolation({
-        description: description.trim(),
-        category,
-        datetime,
-        photoBase64,
-        photoMime: photoMime ?? "image/jpeg",
-      });
-      const all = await getOfflineViolations();
-      console.log("[SQLite] Збережені правопорушення:", all);
-      Alert.alert("", t("violation.saved"));
-      setDescription("");
-      setCategory(VIOLATION_CATEGORY_KEYS[0]);
-      setPhotoBase64(null);
-      setPhotoMime(null);
-    } catch (e) {
-      console.warn("Save violation error:", e);
-      Alert.alert("", "Помилка збереження.");
-    } finally {
-      setSaving(false);
-    }
-  };
+    const save = async () => {
+        if (!description.trim()) {
+            Alert.alert("", "Введіть опис.");
+            return;
+        }
+        if (!photoBase64) {
+            Alert.alert("", "Зробіть фото.");
+            return;
+        }
+
+        setSaving(true);
+
+        const datetime = new Date().toISOString();
+        const trimmedDesc = description.trim();
+        const mime = photoMime ?? "image/jpeg";
+
+        try {
+            await insertOfflineViolation({
+                description: trimmedDesc,
+                category,
+                datetime,
+                photoBase64,
+                photoMime: mime,
+            });
+
+            const all = await getOfflineViolations();
+            console.log("[SQLite] Збережені правопорушення:", all);
+            Alert.alert("", t("violation.saved"));
+
+            if (photoUri) {
+                try {
+                    const photoUrl = await uploadImage(photoUri, photoFileName, mime);
+                    const serverPayload = {
+                        description: trimmedDesc,
+                        category,
+                        datetime,
+                        photoUrl,
+                    };
+                    console.log("[Server payload] Дані для відправки на сервер:", serverPayload);
+                } catch (uploadErr) {
+                    console.warn("[Cloudinary] Офлайн або помилка завантаження:", uploadErr);
+                }
+            }
+
+            setDescription("");
+            setCategory(VIOLATION_CATEGORY_KEYS[0]);
+            setPhotoBase64(null);
+            setPhotoMime(null);
+            setPhotoUri(null);
+            setPhotoFileName(null);
+        } catch (e) {
+            console.warn("Save violation error:", e);
+            Alert.alert("", "Помилка збереження.");
+        } finally {
+            setSaving(false);
+        }
+    };
 
   const { width } = useWindowDimensions();
   const thumbSize = Math.min(width - 32, 120);
