@@ -16,7 +16,14 @@ export default function ViolationsListScreen() {
     try {
       const data = await getOfflineViolations();
       setList(data);
-      console.log("[SQLite] Список правопорушень у консолі:", data);
+      console.log("[SQLite] Список правопорушень у консолі:", data.map(({ id, description, category, datetime, latitude, longitude }) => ({
+        id,
+        description,
+        category,
+        datetime,
+        latitude,
+        longitude,
+      })));
     } catch (e) {
       console.warn("Load violations error:", e);
     }

@@ -10,17 +10,18 @@ import { Ionicons } from "@expo/vector-icons";
 import { Pressable } from "react-native";
 import { DrawerActions } from "@react-navigation/native";
 import BottomTabs from "./BottomTabs";
+import AuthStack from "./AuthStack";
 
 import ProfileScreen from "../screens/ProfileScreen";
 import ThemeScreen from "../screens/ThemeScreen";
 import LanguageScreen from "../screens/LanguageScreen";
+import { useAuth } from "../auth/AuthProvider";
 
 const Drawer = createDrawerNavigator();
 
-function onLogout() {}
-
 function CustomDrawerContent(props) {
   const { t } = useTranslation();
+  const { logout } = useAuth();
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
@@ -31,7 +32,7 @@ function CustomDrawerContent(props) {
         )}
         onPress={() => {
           props.navigation.closeDrawer();
-          onLogout();
+          logout();
         }}
       />
     </DrawerContentScrollView>
@@ -61,6 +62,7 @@ export default function DrawerNavigator() {
             Profile: "person",
             Theme: "moon",
             Language: "language",
+            Auth: "log-in",
           };
           return <Ionicons name={icons[route.name]} size={size} color={color} />;
         },
@@ -85,6 +87,11 @@ export default function DrawerNavigator() {
         name="Language"
         component={LanguageScreen}
         options={{ title: t("drawer.languageSelect") }}
+      />
+      <Drawer.Screen
+        name="Auth"
+        component={AuthStack}
+        options={{ title: t("auth.login") }}
       />
     </Drawer.Navigator>
   );

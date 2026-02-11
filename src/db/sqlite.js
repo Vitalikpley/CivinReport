@@ -115,6 +115,8 @@ export async function insertOfflineViolation({
     datetime,
     photoBase64,
     photoMime,
+    latitude,
+    longitude,
 }) {
     const result = await insertViolation({
         description,
@@ -122,6 +124,8 @@ export async function insertOfflineViolation({
         datetime,
         photoBase64,
         photoMime,
+        latitude,
+        longitude,
     });
     return result?.lastInsertRowId ?? null;
 }

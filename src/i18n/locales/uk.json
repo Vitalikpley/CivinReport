@@ -42,5 +42,27 @@
   "list": {
     "title": "Список правопорушень",
     "empty": "Немає збережених правопорушень"
+  },
+  "auth": {
+    "login": "Вхід",
+    "register": "Реєстрація",
+    "email": "Email",
+    "password": "Пароль",
+    "confirmPassword": "Підтвердити пароль",
+    "firstName": "Ім'я",
+    "lastName": "Прізвище",
+    "loginButton": "Увійти",
+    "registerButton": "Зареєструватися",
+    "haveAccount": "Вже є акаунт?",
+    "noAccount": "Немає акаунту?",
+    "goToLogin": "Увійти",
+    "goToRegister": "Зареєструватися",
+    "emailRequired": "Введіть email",
+    "passwordRequired": "Введіть пароль",
+    "firstNameRequired": "Введіть ім'я",
+    "lastNameRequired": "Введіть прізвище",
+    "passwordsNotMatch": "Паролі не співпадають",
+    "invalidEmail": "Невірний формат email",
+    "passwordTooShort": "Пароль має бути мінімум 6 символів"
   }
 }

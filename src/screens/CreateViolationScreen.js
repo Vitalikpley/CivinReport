@@ -10,18 +10,21 @@ import {
   Image,
   useWindowDimensions,
 } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { useTheme, useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
 import { insertOfflineViolation, getOfflineViolations } from "../db/sqlite";
 import { VIOLATION_CATEGORY_KEYS } from "../constants/categories";
-
 import { uploadImage } from "../services/cloudinary";
+import { useAuth } from "../auth/AuthProvider";
 
 
 export default function CreateViolationScreen() {
   const { colors } = useTheme();
+  const navigation = useNavigation();
   const { t } = useTranslation();
+  const { isAuthenticated } = useAuth();
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(VIOLATION_CATEGORY_KEYS[0]);
   const [photoBase64, setPhotoBase64] = useState(null);
@@ -55,7 +58,7 @@ export default function CreateViolationScreen() {
     }
   };
 
-    const save = async () => {
+  const save = async () => {
         if (!description.trim()) {
             Alert.alert("", "Введіть опис.");
             return;
@@ -71,6 +74,20 @@ export default function CreateViolationScreen() {
         const trimmedDesc = description.trim();
         const mime = photoMime ?? "image/jpeg";
 
+        let latitude = null;
+        let longitude = null;
+        try {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status === "granted") {
+                const currentLocation = await Location.getCurrentPositionAsync({});
+                latitude = currentLocation.coords.latitude;
+                longitude = currentLocation.coords.longitude;
+                console.log("Geolocation:", latitude, longitude);
+            }
+        } catch (locErr) {
+            console.warn("Location error:", locErr);
+        }
+
         try {
             await insertOfflineViolation({
                 description: trimmedDesc,
@@ -78,6 +95,8 @@ export default function CreateViolationScreen() {
                 datetime,
                 photoBase64,
                 photoMime: mime,
+                latitude,
+                longitude,
             });
 
             const all = await getOfflineViolations();
@@ -92,6 +111,8 @@ export default function CreateViolationScreen() {
                         category,
                         datetime,
                         photoUrl,
+                        latitude,
+                        longitude,
                     };
                     console.log("[Server payload] Дані для відправки на сервер:", serverPayload);
                 } catch (uploadErr) {
@@ -115,6 +136,25 @@ export default function CreateViolationScreen() {
 
   const { width } = useWindowDimensions();
   const thumbSize = Math.min(width - 32, 120);
+
+  if (!isAuthenticated) {
+    return (
+      <View style={[styles.lockedContainer, { backgroundColor: colors.background }]}>
+        <Text style={[styles.lockedTitle, { color: colors.text }]}>
+          Створення правопорушення доступне лише після входу
+        </Text>
+        <Text style={[styles.lockedText, { color: colors.text }]}>
+          Відкрийте меню зліва та перейдіть до екрана входу.
+        </Text>
+        <Pressable
+          onPress={() => navigation.getParent()?.navigate("Auth")}
+          style={[styles.lockedButton, { backgroundColor: colors.primary }]}
+        >
+          <Text style={styles.lockedButtonText}>{t("auth.loginButton")}</Text>
+        </Pressable>
+      </View>
+    );
+  }
 
   return (
     <ScrollView
@@ -208,4 +248,31 @@ const styles = StyleSheet.create({
   categoryText: { fontSize: 14 },
   saveBtn: { paddingVertical: 14, borderRadius: 12, alignItems: "center" },
   saveBtnText: { color: "#fff", fontWeight: "600", fontSize: 16 },
+  lockedContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 24,
+  },
+  lockedTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 12,
+  },
+  lockedText: {
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 24,
+  },
+  lockedButton: {
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+  },
+  lockedButtonText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16,
+  },
 });

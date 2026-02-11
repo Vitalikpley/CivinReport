@@ -42,5 +42,27 @@
   "list": {
     "title": "Violations list",
     "empty": "No saved violations"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "loginButton": "Sign in",
+    "registerButton": "Sign up",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "goToLogin": "Sign in",
+    "goToRegister": "Sign up",
+    "emailRequired": "Enter email",
+    "passwordRequired": "Enter password",
+    "firstNameRequired": "Enter first name",
+    "lastNameRequired": "Enter last name",
+    "passwordsNotMatch": "Passwords do not match",
+    "invalidEmail": "Invalid email format",
+    "passwordTooShort": "Password must be at least 6 characters"
   }
 }

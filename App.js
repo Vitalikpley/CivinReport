@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
 import { ThemeProvider, ThemeContext } from "./src/Theme/ThemeProvider";
 import { LanguageProvider, LanguageContext } from "./src/i18n/languageProvider";
+import { AuthProvider } from "./src/auth/AuthProvider";
 import { initDb } from "./src/db/sqlite";
 import DrawerNavigator from "./src/navigation/DrawersNavigator";
 
@@ -37,7 +38,9 @@ export default function App() {
     return (
         <LanguageProvider>
             <ThemeProvider>
-                <AppInner />
+                <AuthProvider>
+                    <AppInner />
+                </AuthProvider>
             </ThemeProvider>
         </LanguageProvider>
     );
