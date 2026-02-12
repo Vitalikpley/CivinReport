@@ -12,6 +12,9 @@ const Day = ({ day, isLandscape, hasTodos, onPress, calendarWidth }) => {
     const fontSize = isLandscape ? 11 : 16;
     const dotSize = isLandscape ? 5 : 7;
 
+    const textColor = colors.text;
+    const disabledColor = colors.text + '80'; // 50% opacity
+
     return (
         <TouchableOpacity
             style={[styles.container, { width: cellSize, height: isLandscape ? Math.min(cellSize * 0.55, (height || 300) / 8) : cellSize * 0.8 }]}
@@ -24,9 +27,7 @@ const Day = ({ day, isLandscape, hasTodos, onPress, calendarWidth }) => {
                 isToday && { backgroundColor: colors.primary }
             ]}>
                 <Text style={[
-                    styles.text,
-                    { fontSize },
-                    !isCurrentMonth && styles.disabledText,
+                    { fontSize, color: isCurrentMonth ? textColor : disabledColor },
                     isToday && styles.todayText
                 ]}>
                     {number}
@@ -56,12 +57,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
-    },
-    text: {
-        color: '#000'
-    },
-    disabledText: {
-        color: '#989898',
     },
     todayText: {
         color: '#fff',

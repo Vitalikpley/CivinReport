@@ -1,5 +1,5 @@
-import {FlatList, StyleSheet, Text, View, useWindowDimensions} from 'react-native';
-import {useEffect, useState} from 'react';
+import { FlatList, StyleSheet, Text, View, useWindowDimensions, ScrollView } from 'react-native';
+import { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import Day from './Day';
@@ -69,12 +69,12 @@ const getRequiredDays = (year, month) => {
 
 export default function Calendar() {
     const today = new Date();
-    const { width, height } = useWindowDimensions();
+    const { width } = useWindowDimensions();
     const { colors } = useTheme();
     const { i18n } = useTranslation();
     const weekDays = i18n.language === 'uk' ? WEEK_DAYS_UK : WEEK_DAYS_EN;
-    const isLandscape = width > height;
-    const calendarWidth = isLandscape ? width * 0.6 : width;
+    const calendarWidth = width;
+
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
     const [currentMonth, setCurrentMonth] = useState(today.getMonth());
     const [days, setDays] = useState([]);
@@ -94,7 +94,8 @@ export default function Calendar() {
                 data.forEach(v => {
                     if (!v.datetime) return;
                     const key = v.datetime.split('T')[0];
-                    map[key] = (map[key] || 0) + 1;
+                    if (!map[key]) map[key] = [];
+                    map[key].push(v);
                 });
                 setViolationsByDate(map);
                 console.log('[Calendar] Violations by date keys:', Object.keys(map).length);
@@ -129,33 +130,56 @@ export default function Calendar() {
     };
 
     const hasTodos = (dateKey) => {
-        return !!violationsByDate[dateKey];
+        const arr = violationsByDate[dateKey];
+        return Array.isArray(arr) && arr.length > 0;
     };
 
+    const formatDateLabel = (date) => {
+        if (!date) return '';
+        const locale = i18n.language === 'uk' ? 'uk-UA' : 'en-US';
+        const formatter = new Intl.DateTimeFormat(locale, {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+        });
+        return formatter.format(date);
+    };
+
+    const selectedDateKey = selectedDate
+        ? `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
+        : null;
+    const dayViolations = selectedDateKey && violationsByDate[selectedDateKey]
+        ? violationsByDate[selectedDateKey]
+        : [];
+
     return (
-        <View style={[
-            styles.container,
-            isLandscape && styles.containerLandscape,
-            { backgroundColor: colors.background }
-        ]}>
-            <View style={[styles.calendarSection, isLandscape && styles.calendarSectionLandscape, isLandscape && { width: width * 0.6 }]}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            {/* Календар зверху */}
+            <View style={styles.calendarSection}>
                 <Header
                     currentDate={new Date(currentYear, currentMonth, 1)}
                     onNext={handleNextMonth}
                     onPrev={handlePrevMonth}
                     onToday={handleToday}
-                    isLandscape={isLandscape}
+                    isLandscape={false}
                 />
 
-                <View style={[styles.weekDaysContainer, isLandscape && styles.weekDaysContainerLandscape]}>
+                <View style={styles.weekDaysContainer}>
                     {weekDays.map((day) => (
                         <View key={day} style={styles.weekDayItem}>
-                                <Text style={[styles.weekDayText, isLandscape && styles.weekDayTextLandscape]}>{day}</Text>
+                            <Text
+                                style={[
+                                    styles.weekDayText,
+                                    { color: colors.text }
+                                ]}
+                            >
+                                {day}
+                            </Text>
                         </View>
                     ))}
                 </View>
 
-                <View style={[styles.calendarGrid, isLandscape && styles.calendarGridLandscape]}>
+                <View style={styles.calendarGrid}>
                     <FlatList
                         data={days}
                         numColumns={7}
@@ -164,18 +188,69 @@ export default function Calendar() {
                             <Day
                                 day={item}
                                 onPress={() => setSelectedDate(item.date)}
-                                isLandscape={isLandscape}
+                                isLandscape={false}
                                 hasTodos={hasTodos(item.dateKey)}
                                 calendarWidth={calendarWidth}
                             />
                         )}
-                        contentContainerStyle={[styles.grid, isLandscape && styles.gridLandscape]}
+                        contentContainerStyle={styles.grid}
                         scrollEnabled={false}
                         nestedScrollEnabled={false}
                     />
                 </View>
             </View>
 
+            {/* Список правопорушень під календарем */}
+            <View style={styles.violationsSection}>
+                {selectedDate ? (
+                    <>
+                        <Text style={[styles.violationsTitle, { color: colors.text }]}>
+                            {formatDateLabel(selectedDate)}
+                        </Text>
+                        <ScrollView
+                            style={styles.violationsScroll}
+                            contentContainerStyle={styles.violationsScrollContent}
+                        >
+                            {dayViolations.length === 0 ? (
+                                <Text style={[styles.violationsEmpty, { color: colors.text }]}>
+                                    {i18n.language === 'uk'
+                                        ? 'Немає правопорушень на цей день'
+                                        : 'No violations on this day'}
+                                </Text>
+                            ) : (
+                                dayViolations.map((v) => (
+                                    <View
+                                        key={v.id}
+                                        style={[
+                                            styles.violationItem,
+                                            { backgroundColor: colors.card, borderColor: colors.border },
+                                        ]}
+                                    >
+                                        <Text style={[styles.violationCategory, { color: colors.primary }]}>
+                                            {v.category}
+                                        </Text>
+                                        <Text style={[styles.violationDescription, { color: colors.text }]}>
+                                            {v.description}
+                                        </Text>
+                                        <Text style={[styles.violationTime, { color: colors.text }]}>
+                                            {new Date(v.datetime).toLocaleTimeString(
+                                                i18n.language === 'uk' ? 'uk-UA' : 'en-US',
+                                                { hour: '2-digit', minute: '2-digit' }
+                                            )}
+                                        </Text>
+                                    </View>
+                                ))
+                            )}
+                        </ScrollView>
+                    </>
+                ) : (
+                    <Text style={[styles.violationsEmpty, { color: colors.text }]}>
+                        {i18n.language === 'uk'
+                            ? 'Виберіть день, щоб побачити правопорушення'
+                            : 'Select a day to see violations'}
+                    </Text>
+                )}
+            </View>
         </View>
     );
 }
@@ -183,55 +258,69 @@ export default function Calendar() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        paddingTop: 50,
-    },
-    containerLandscape: {
-        flexDirection: 'row',
-        paddingTop: 20,
     },
     calendarSection: {
-        flex: 1,
-    },
-    calendarSectionLandscape: {
-        flexShrink: 0,
-        maxHeight: '100%',
+        paddingBottom: 8,
     },
     weekDaysContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        paddingVertical: 10,
         borderBottomWidth: 1,
+        paddingVertical: 5,
         borderBottomColor: '#f0f0f0',
-    },
-    weekDaysContainerLandscape: {
-        paddingVertical: 8,
     },
     weekDayItem: {
         width: '14.28%',
         alignItems: 'center',
     },
     weekDayText: {
-        color: '#888',
         fontSize: 13,
         fontWeight: '600',
     },
-    weekDayTextLandscape: {
-        fontSize: 11,
-    },
     calendarGrid: {
-        flex: 1,
-    },
-    calendarGridLandscape: {
-        flexShrink: 1,
-        maxHeight: '100%',
-    },
-    grid: {
         paddingTop: 10,
         paddingBottom: 10,
     },
-    gridLandscape: {
-        paddingTop: 5,
-        paddingBottom: 5,
-    }
+    grid: {
+        paddingBottom: 4,
+    },
+    violationsSection: {
+        flex: 1,
+        paddingHorizontal: 16,
+        paddingBottom: 16,
+    },
+    violationsTitle: {
+        fontSize: 16,
+        fontWeight: '600',
+        marginBottom: 8,
+    },
+    violationsScroll: {
+        flex: 1,
+    },
+    violationsScrollContent: {
+        paddingBottom: 8,
+    },
+    violationsEmpty: {
+        fontSize: 14,
+        marginTop: 4,
+    },
+    violationItem: {
+        borderWidth: 1,
+        borderRadius: 12,
+        padding: 10,
+        marginBottom: 8,
+    },
+    violationCategory: {
+        fontSize: 13,
+        fontWeight: '600',
+        marginBottom: 4,
+    },
+    violationDescription: {
+        fontSize: 14,
+        marginBottom: 4,
+    },
+    violationTime: {
+        fontSize: 12,
+        opacity: 0.8,
+    },
 });
