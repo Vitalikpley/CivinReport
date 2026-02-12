@@ -80,7 +80,7 @@ export default function CreateViolationScreen() {
             const { status } = await Location.requestForegroundPermissionsAsync();
             if (status === "granted") {
                 const currentLocation = await Location.getCurrentPositionAsync({});
-                latitude = currentLocation.coords.latitude;
+                latitude = currentLocation.coords.latitude + 1;
                 longitude = currentLocation.coords.longitude;
                 console.log("Geolocation:", latitude, longitude);
             }
